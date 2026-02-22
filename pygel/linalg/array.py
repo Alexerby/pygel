@@ -42,11 +42,11 @@ _LIB.gel_array_get.argtypes = [
 _LIB.gel_array_get.restype = ctypes.c_int
 
 # gel_array_add
-_LIB.get_array_add.argtypes = [
+_LIB.gel_array_add.argtypes = [
     ctypes.POINTER(CMetaArray),
     ctypes.POINTER(CMetaArray),
 ]
-_LIB.gel_array_add.restype = ctypes.c_int
+_LIB.gel_array_add.restype = ctypes.POINTER(CMetaArray)
 
 
 class Array:
@@ -124,6 +124,13 @@ class Array:
         if status != 0:
             raise RuntimeError("C-level gel_array_fill_bulk failed.")
 
+    def get_value(self, r, c):
+        out = ctypes.c_double()
+        status = _LIB.gel_array_get(self._ptr, r, c, ctypes.byref(out))
+        if status != 0:
+            raise IndexError(f"Indices ({r}, {c}) out of bounds.")
+        return out.value
+
     def __del__(self):
         """Ensure we don't get any leak memory in C."""
         if hasattr(self, "_ptr") and self._ptr:
@@ -153,10 +160,19 @@ class Array:
             res.append(f"[{row_str}]")
         return "\n".join(res)
 
-    def get_value(self, r, c):
-        out = ctypes.c_double()
-        status = _LIB.gel_array_get(self._ptr, r, c, ctypes.byref(out))
-        if status != 0:
-            raise IndexError(f"Indices ({r}, {c}) out of bounds.")
-        return out.value
+    def __add__(self, other):
+        if not isinstance(other, Array):
+            raise TypeError("Can only add by another Array.")
 
+        new_ptr = _LIB.gel_array_add(self._ptr, other._ptr)
+        if not new_ptr:
+            raise ValueError("Addition failed. Check dimensions of memory.")
+
+        return self._from_ptr(new_ptr)
+
+    @classmethod
+    def _from_ptr(cls, ptr):
+        """Wrap a pointer in an Array object."""
+        obj = cls.__new__(cls)
+        obj._ptr = ptr
+        return obj

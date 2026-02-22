@@ -88,4 +88,12 @@ Array *gel_matrix_add(const Array *a, const Array *b);
  */
 Array *gel_matrix_mul(const Array *a, const Array *b);
 
+/**
+ * @brief Adds two matrices.
+ * @param a First matrix.
+ * @param b Second matrix.
+ * @return Newly allocated matrix with the sum, or NULL if dimensions mismatch.
+ */
+Array *gel_matrix_add(const Array *a, const Array *b);
+
 #endif // GEL_ARRAY_H
