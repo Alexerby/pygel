@@ -56,3 +56,57 @@ void gel_array_free(Array *m) {
     free(m);
   }
 }
+
+Array *gel_array_add(const Array *a, const Array *b) {
+  if (!a || !b)
+    return NULL;
+  if (a->rows != b->rows || a->cols != b->cols)
+    return NULL;
+
+  Array *c = gel_array_create(a->rows, a->cols);
+  if (!c)
+    return NULL;
+
+  for (size_t i = 0; i < (a->rows); i++) {
+    for (size_t j = 0; j < (a->cols); j++) {
+      double aVal = MAT_AT(a, i, j);
+      double bVal = MAT_AT(b, i, j);
+      MAT_AT(c, i, j) = aVal + bVal;
+    }
+  }
+
+  return c;
+}
+
+Array *gel_array_mul(const Array *a, const Array *b) {
+  if (!a || !b) {
+    return NULL;
+  }
+
+  // Check dimension compatibility: a.cols must equal b.rows
+  if (a->cols != b->rows) {
+    return NULL;
+  }
+
+  // Create result array with shape (a.rows x b.cols)
+  Array *c = gel_array_create(a->rows, b->cols);
+  if (!c)
+    return NULL;
+
+  // Standard array multiplication:
+  for (size_t i = 0; i < (a->rows); i++) {   // rows of A
+    for (size_t j = 0; j < (b->cols); j++) { // cols of B
+      double sum = 0.0;                      // reset sum
+
+      // Dot product <a, b>
+      for (size_t k = 0; k < (a->cols); k++) {
+        double aVal = MAT_AT(a, i, k);
+        double bVal = MAT_AT(b, k, j);
+        sum += aVal * bVal;
+      }
+      MAT_AT(c, i, j) = sum; // store result in C(i,j)
+    }
+  }
+
+  return c;
+}

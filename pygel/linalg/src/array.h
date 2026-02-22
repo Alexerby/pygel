@@ -71,4 +71,21 @@ int gel_array_get(const Array *m, size_t row_index, size_t col_index,
  */
 void gel_array_free(Array *m);
 
+/**
+ * @brief Adds two matrices.
+ * @param a First matrix.
+ * @param b Second matrix.
+ * @return Newly allocated matrix with the sum, or NULL if dimensions mismatch.
+ */
+Array *gel_matrix_add(const Array *a, const Array *b);
+
+/**
+ * @brief Multiplies two matrices.
+ * @param a Left-hand side matrix.
+ * @param b Right-hand side matrix.
+ * @return Newly allocated matrix with the product, or NULL if dimensions
+ * mismatch.
+ */
+Array *gel_matrix_mul(const Array *a, const Array *b);
+
 #endif // GEL_ARRAY_H

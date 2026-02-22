@@ -41,6 +41,13 @@ _LIB.gel_array_get.argtypes = [
 ]
 _LIB.gel_array_get.restype = ctypes.c_int
 
+# gel_array_add
+_LIB.get_array_add.argtypes = [
+    ctypes.POINTER(CMetaArray),
+    ctypes.POINTER(CMetaArray),
+]
+_LIB.gel_array_add.restype = ctypes.c_int
+
 
 class Array:
     def __init__(self, data=None):
@@ -58,6 +65,8 @@ class Array:
             raise MemoryError("C-level Array allocation failed.")
 
         flat_data = chain.from_iterable(data)
+
+        # TODO: Look closer at performance of this unpacking
         buffer = (ctypes.c_double * total_size)(*flat_data)
 
         _LIB.gel_array_fill_bulk(self._ptr, buffer)
@@ -150,3 +159,4 @@ class Array:
         if status != 0:
             raise IndexError(f"Indices ({r}, {c}) out of bounds.")
         return out.value
+
