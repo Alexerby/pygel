@@ -48,6 +48,13 @@ _LIB.gel_array_add.argtypes = [
 ]
 _LIB.gel_array_add.restype = ctypes.POINTER(CMetaArray)
 
+# gel_array_matmul
+_LIB.gel_array_matmul.argtypes = [
+    ctypes.POINTER(CMetaArray),
+    ctypes.POINTER(CMetaArray),
+]
+_LIB.gel_array_matmul.restype = ctypes.POINTER(CMetaArray)
+
 
 class Array:
     def __init__(self, data=None):
@@ -166,7 +173,19 @@ class Array:
 
         new_ptr = _LIB.gel_array_add(self._ptr, other._ptr)
         if not new_ptr:
-            raise ValueError("Addition failed. Check dimensions of memory.")
+            raise ValueError(
+                "Addition failed. Check that the matrices are conformable."
+            )
+
+        return self._from_ptr(new_ptr)
+
+    def __matmul__(self, other):
+        if not isinstance(other, Array):
+            raise TypeError("Can only add by another Array.")
+
+        new_ptr = _LIB.gel_array_matmul(self._ptr, other._ptr)
+        if not new_ptr:
+            raise ValueError("MATMUL failed. Check that the Array's are conformable.")
 
         return self._from_ptr(new_ptr)
 
