@@ -35,7 +35,7 @@ int gel_array_set(Array *m, size_t row_index, size_t col_index, double val) {
   if (!m || row_index >= m->rows || col_index >= m->cols) {
     return -1; // invalid indices
   }
-  MAT_AT(m, row_index, col_index) = val;
+  ARR_AT(m, row_index, col_index) = val;
   return 0;
 }
 
@@ -44,7 +44,7 @@ int gel_array_get(const Array *m, size_t row_index, size_t col_index,
   if (!m || !out || row_index >= m->rows || col_index >= m->cols) {
     return -1; // invalid indices
   }
-  *out = MAT_AT(m, row_index, col_index);
+  *out = ARR_AT(m, row_index, col_index);
   return 0;
 }
 
@@ -69,16 +69,16 @@ Array *gel_array_add(const Array *a, const Array *b) {
 
   for (size_t i = 0; i < (a->rows); i++) {
     for (size_t j = 0; j < (a->cols); j++) {
-      double aVal = MAT_AT(a, i, j);
-      double bVal = MAT_AT(b, i, j);
-      MAT_AT(c, i, j) = aVal + bVal;
+      double aVal = ARR_AT(a, i, j);
+      double bVal = ARR_AT(b, i, j);
+      ARR_AT(c, i, j) = aVal + bVal;
     }
   }
 
   return c;
 }
 
-Array *gel_array_mul(const Array *a, const Array *b) {
+Array *gel_array_matmul(const Array *a, const Array *b) {
   if (!a || !b) {
     return NULL;
   }
@@ -100,11 +100,11 @@ Array *gel_array_mul(const Array *a, const Array *b) {
 
       // Dot product <a, b>
       for (size_t k = 0; k < (a->cols); k++) {
-        double aVal = MAT_AT(a, i, k);
-        double bVal = MAT_AT(b, k, j);
+        double aVal = ARR_AT(a, i, k);
+        double bVal = ARR_AT(b, k, j);
         sum += aVal * bVal;
       }
-      MAT_AT(c, i, j) = sum; // store result in C(i,j)
+      ARR_AT(c, i, j) = sum; // store result in C(i,j)
     }
   }
 

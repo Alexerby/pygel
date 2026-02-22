@@ -24,7 +24,7 @@ typedef struct {
 } Array;
 
 /** Macro to access a array element at (i, j) */
-#define MAT_AT(m, i, j) ((m)->data[(i) * (m)->cols + (j)])
+#define ARR_AT(m, i, j) ((m)->data[(i) * (m)->cols + (j)])
 
 /* ===== Core functions ===== */
 
@@ -86,7 +86,7 @@ Array *gel_matrix_add(const Array *a, const Array *b);
  * @return Newly allocated matrix with the product, or NULL if dimensions
  * mismatch.
  */
-Array *gel_matrix_mul(const Array *a, const Array *b);
+Array *gel_matrix_matmul(const Array *a, const Array *b);
 
 /**
  * @brief Adds two matrices.
